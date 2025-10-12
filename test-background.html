@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Background Only</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; 
+            background-color: #000000; 
+            color: white; 
+            font-family: 'Courier New', monospace; 
+        }
+        canvas {
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+        }
+        #loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; 
+            transition: opacity 0.6s ease-out; 
+        }
+        #loading span {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 15px; 
+        }
+        #progress-container {
+             width: 60%;
+             max-width: 300px;
+             height: 6px;
+             background-color: rgba(255, 255, 255, 0.1);
+             border-radius: 3px;
+             overflow: hidden; 
+        }
+        #progress {
+            height: 100%;
+            width: 0%; 
+            background: linear-gradient(90deg, #00a2ff, #00ffea); 
+            transition: width 0.3s ease; 
+            border-radius: 3px;
+        }
+        /* Test content to see background */
+        .test-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+            color: white;
+        }
+        .test-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        .test-content p {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <span>Loading Particle Background...</span>
+        <div id="progress-container">
+             <div id="progress"></div>
+        </div>
+    </div>
+
+    <!-- Test content to see how background looks -->
+    <div class="test-content">
+        <h1>Particle Background</h1>
+        <p>Beautiful animated particle background perfect for your portfolio. No shapes - just flowing particles and stars.</p>
+    </div>
+
+    <canvas id="webglCanvas"></canvas>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/",
+          "simplex-noise": "https://cdn.skypack.dev/simplex-noise@4.0.1"
+        }
+      }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { createNoise3D, createNoise4D } from 'simplex-noise';
+
+        let scene, camera, renderer, clock;
+        let composer, bloomPass; 
+        let noise3D, noise4D; 
+        let isInitialized = false;
+
+        const CONFIG = {
+            particleCount: 8000, // Reduced for background
+            bloomStrength: 1.5,
+            bloomRadius: 0.7,
+            bloomThreshold: 0.1,
+            starCount: 12000,
+            noiseFrequency: 0.05,
+            noiseTimeScale: 0.02,
+            flowStrength: 0.3,
+            flowSpeed: 0.05
+        };
+
+        function init() {
+            let progress = 0;
+            const progressBar = document.getElementById('progress');
+            const loadingScreen = document.getElementById('loading');
+            
+            function updateProgress(increment) {
+                progress += increment;
+                progressBar.style.width = `${Math.min(100, progress)}%`;
+                if (progress >= 100) {
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
+                    }, 200);
+                }
+            }
+
+            clock = new THREE.Clock();
+            noise3D = createNoise3D(() => Math.random());
+            noise4D = createNoise4D(() => Math.random());
+            
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000308, 0.02);
+            updateProgress(10);
+
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 50);
+            updateProgress(10);
+
+            const canvas = document.getElementById('webglCanvas');
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            updateProgress(15);
+
+            setupPostProcessing();
+            updateProgress(15);
+            
+            createStarfield();
+            updateProgress(25);
+            
+            createFloatingParticles();
+            updateProgress(25);
+
+            window.addEventListener('resize', onWindowResize);
+            updateProgress(10);
+
+            isInitialized = true;
+            animate();
+        }
+
+        function setupPostProcessing() {
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight), 
+                CONFIG.bloomStrength, 
+                CONFIG.bloomRadius, 
+                CONFIG.bloomThreshold
+            );
+            composer.addPass(bloomPass);
+        }
+
+        function createStarfield() {
+            const starVertices = [];
+            const starSizes = [];
+            const starColors = [];
+            const starGeometry = new THREE.BufferGeometry();
+            
+            for (let i = 0; i < CONFIG.starCount; i++) {
+                const x = THREE.MathUtils.randFloatSpread(600);
+                const y = THREE.MathUtils.randFloatSpread(600);
+                const z = THREE.MathUtils.randFloatSpread(400);
+                
+                starVertices.push(x, y, z);
+                starSizes.push(Math.random() * 0.8 + 0.2);
+                
+                const color = new THREE.Color();
+                if (Math.random() < 0.15) {
+                    // Some blue/cyan stars
+                    color.setHSL(0.5 + Math.random() * 0.1, 0.8, 0.7);
+                } else {
+                    // Most are white/blue-white
+                    color.setHSL(0.6, Math.random() * 0.2, 0.8 + Math.random() * 0.2);
+                }
+                starColors.push(color.r, color.g, color.b);
+            }
+            
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+            starGeometry.setAttribute('size', new THREE.Float32BufferAttribute(starSizes, 1));
+            
+            const starMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    pointTexture: { value: createStarTexture() }
+                },
+                vertexShader: `
+                    attribute float size;
+                    varying vec3 vColor;
+                    void main() {
+                        vColor = color;
+                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                        gl_PointSize = size * (300.0 / -mvPosition.z);
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `,
+                fragmentShader: `
+                    uniform sampler2D pointTexture;
+                    varying vec3 vColor;
+                    void main() {
+                        float alpha = texture2D(pointTexture, gl_PointCoord).a;
+                        if (alpha < 0.1) discard;
+                        gl_FragColor = vec4(vColor, alpha * 0.8);
+                    }
+                `,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                transparent: true,
+                vertexColors: true
+            });
+            
+            scene.add(new THREE.Points(starGeometry, starMaterial));
+        }
+
+        function createFloatingParticles() {
+            const particleVertices = [];
+            const particleSizes = [];
+            const particleColors = [];
+            const particleGeometry = new THREE.BufferGeometry();
+            
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const x = THREE.MathUtils.randFloatSpread(400);
+                const y = THREE.MathUtils.randFloatSpread(400);
+                const z = THREE.MathUtils.randFloatSpread(200);
+                
+                particleVertices.push(x, y, z);
+                particleSizes.push(Math.random() * 1.5 + 0.5);
+                
+                const color = new THREE.Color();
+                // Mix of white and cyan particles
+                if (Math.random() < 0.3) {
+                    color.setHSL(0.5, 0.8, 0.6); // Cyan
+                } else {
+                    color.setHSL(0.6, 0.1, 0.9); // White-blue
+                }
+                particleColors.push(color.r, color.g, color.b);
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particleVertices, 3));
+            particleGeometry.setAttribute('color', new THREE.Float32BufferAttribute(particleColors, 3));
+            particleGeometry.setAttribute('size', new THREE.Float32BufferAttribute(particleSizes, 1));
+            
+            const particleMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    pointTexture: { value: createStarTexture() },
+                    time: { value: 0 }
+                },
+                vertexShader: `
+                    attribute float size;
+                    uniform float time;
+                    varying vec3 vColor;
+                    void main() {
+                        vColor = color;
+                        vec3 pos = position;
+                        
+                        // Gentle floating animation
+                        pos.x += sin(time * 0.5 + position.y * 0.01) * 2.0;
+                        pos.y += cos(time * 0.3 + position.x * 0.01) * 1.5;
+                        pos.z += sin(time * 0.4 + position.x * 0.005) * 1.0;
+                        
+                        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                        gl_PointSize = size * (200.0 / -mvPosition.z);
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `,
+                fragmentShader: `
+                    uniform sampler2D pointTexture;
+                    varying vec3 vColor;
+                    void main() {
+                        float alpha = texture2D(pointTexture, gl_PointCoord).a;
+                        if (alpha < 0.1) discard;
+                        gl_FragColor = vec4(vColor, alpha * 0.7);
+                    }
+                `,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                transparent: true,
+                vertexColors: true
+            });
+            
+            const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particleSystem);
+            
+            // Store reference for animation
+            window.floatingParticles = { geometry: particleGeometry, material: particleMaterial };
+        }
+
+        function createStarTexture() {
+            const size = 64;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const context = canvas.getContext('2d');
+            
+            const gradient = context.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+            gradient.addColorStop(0.5, 'rgba(255,255,255,0.4)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, size, size);
+            
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!isInitialized) return;
+            
+            const elapsedTime = clock.getElapsedTime();
+            const deltaTime = clock.getDelta();
+            
+            // Update floating particles
+            if (window.floatingParticles) {
+                window.floatingParticles.material.uniforms.time.value = elapsedTime;
+            }
+            
+            // Gentle camera movement
+            camera.position.x = Math.sin(elapsedTime * 0.1) * 5;
+            camera.position.y = Math.cos(elapsedTime * 0.15) * 3;
+            camera.lookAt(scene.position);
+            
+            composer.render(deltaTime);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Sanjay S Portfolio</title>
+    <style>
+        body, html { 
+            height: 100%; 
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100%;
+            background-color: rgba(25,25,25,1);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Welcome Text Above Black Hole */
+        .welcome-text {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #DDD;
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-align: center;
+            z-index: 3;
+            opacity: 0;
+            animation: fadeInUp 2s ease 1s forwards;
+        }
+
+        .subtitle {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 3;
+            opacity: 0;
+            animation: fadeInUp 2s ease 1.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        #blackhole {
+            height: 100%;
+            width: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        .centerHover {
+            width: 255px;
+            height: 255px;
+            background-color: transparent;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-top: -128px;
+            margin-left: -128px;
+            z-index: 2;
+            cursor: pointer;
+            line-height: 255px;
+            text-align: center;
+            transition: all 500ms;
+        }
+
+        .centerHover.open {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .centerHover:hover span {
+            color: #DDD;
+        }
+
+        .centerHover:hover span:before { 
+            background-color: #DDD; 
+        }
+
+        .centerHover:hover span:after { 
+            background-color: #DDD; 
+        }
+
+        .centerHover span {
+            color: #666;
+            font-family: serif;
+            font-size: 16px;
+            position: relative;
+            transition: all 500ms;
+        }
+
+        .centerHover span:before {
+            content: '';
+            display: inline-block;
+            height: 1px;
+            width: 16px;
+            margin-right: 12px;
+            margin-bottom: 4px;
+            background-color: #666;
+            transition: all 500ms;
+        }
+
+        .centerHover span:after {
+            content: '';
+            display: inline-block;
+            height: 1px;
+            width: 16px;
+            margin-left: 12px;
+            margin-bottom: 4px;
+            background-color: #666;
+            transition: all 500ms;
+        }
+
+        canvas {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            margin: auto;
+        }
+
+        /* Loading Text */
+        .loading-text {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 0.9rem;
+            z-index: 3;
+            opacity: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-text.show {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .welcome-text {
+                font-size: 2rem;
+                top: 10%;
+                padding: 0 1rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                top: 20%;
+                padding: 0 1rem;
+            }
+
+            .centerHover {
+                width: 200px;
+                height: 200px;
+                margin-top: -100px;
+                margin-left: -100px;
+                line-height: 200px;
+            }
+
+            .centerHover span {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Text -->
+    <div class="welcome-text">Welcome to My Portfolio</div>
+    <div class="subtitle">Sanjay S - Computer Science Student</div>
+    
+    <!-- Black Hole Container -->
+    <div id="blackhole">
+        <div class="centerHover"><span>Enter to Continue</span></div>
+    </div>
+    
+    <!-- Loading Text -->
+    <div class="loading-text" id="loadingText">Click the center to experience the journey</div>
+
+    <script>
+        function blackhole(element) {
+            const container = document.querySelector(element);
+            const h = container.offsetHeight;
+            const w = container.offsetWidth;
+            const cw = w;
+            const ch = h;
+            const maxorbit = 255;
+            const centery = ch / 2;
+            const centerx = cw / 2;
+
+            const startTime = new Date().getTime();
+            let currentTime = 0;
+
+            const stars = [];
+            let collapse = false;
+            let expanse = false;
+            let returning = false;
+
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = cw;
+            canvas.height = ch;
+            container.appendChild(canvas);
+            const context = canvas.getContext("2d");
+
+            context.globalCompositeOperation = "multiply";
+
+            function setDPI(canvas, dpi) {
+                if (!canvas.style.width)
+                    canvas.style.width = canvas.width + 'px';
+                if (!canvas.style.height)
+                    canvas.style.height = canvas.height + 'px';
+
+                const scaleFactor = dpi / 96;
+                canvas.width = Math.ceil(canvas.width * scaleFactor);
+                canvas.height = Math.ceil(canvas.height * scaleFactor);
+                const ctx = canvas.getContext('2d');
+                ctx.scale(scaleFactor, scaleFactor);
+            }
+
+            function rotate(cx, cy, x, y, angle) {
+                const radians = angle;
+                const cos = Math.cos(radians);
+                const sin = Math.sin(radians);
+                const nx = (cos * (x - cx)) + (sin * (y - cy)) + cx;
+                const ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+                return [nx, ny];
+            }
+
+            setDPI(canvas, 192);
+
+            class Star {
+                constructor() {
+                    const rands = [];
+                    rands.push(Math.random() * (maxorbit / 2) + 1);
+                    rands.push(Math.random() * (maxorbit / 2) + maxorbit);
+
+                    this.orbital = (rands.reduce((p, c) => p + c, 0) / rands.length);
+                    
+                    this.x = centerx;
+                    this.y = centery + this.orbital;
+                    this.yOrigin = centery + this.orbital;
+                    this.speed = (Math.floor(Math.random() * 2.5) + 1.5) * Math.PI / 180;
+                    this.rotation = 0;
+                    this.startRotation = (Math.floor(Math.random() * 360) + 1) * Math.PI / 180;
+                    this.id = stars.length;
+                    this.collapseBonus = this.orbital - (maxorbit * 0.7);
+                    
+                    if (this.collapseBonus < 0) {
+                        this.collapseBonus = 0;
+                    }
+
+                    this.color = 'rgba(255,255,255,' + (1 - ((this.orbital) / 255)) + ')';
+                    this.hoverPos = centery + (maxorbit / 2) + this.collapseBonus;
+                    this.expansePos = centery + (this.id % 100) * -10 + (Math.floor(Math.random() * 20) + 1);
+                    this.prevR = this.startRotation;
+                    this.prevX = this.x;
+                    this.prevY = this.y;
+                    this.originalY = this.yOrigin;
+
+                    stars.push(this);
+                }
+
+                draw() {
+                    if (!expanse && !returning) {
+                        this.rotation = this.startRotation + (currentTime * this.speed);
+                        if (!collapse) {
+                            if (this.y > this.yOrigin) {
+                                this.y -= 2.5;
+                            }
+                            if (this.y < this.yOrigin - 4) {
+                                this.y += (this.yOrigin - this.y) / 10;
+                            }
+                        } else {
+                            this.trail = 1;
+                            if (this.y > this.hoverPos) {
+                                this.y -= (this.hoverPos - this.y) / -5;
+                            }
+                            if (this.y < this.hoverPos - 4) {
+                                this.y += 2.5;
+                            }
+                        }
+                    } else if (expanse && !returning) {
+                        this.rotation = this.startRotation + (currentTime * (this.speed / 2));
+                        if (this.y > this.expansePos) {
+                            this.y -= Math.floor(this.expansePos - this.y) / -80;
+                        }
+                    } else if (returning) {
+                        this.rotation = this.startRotation + (currentTime * this.speed);
+                        if (Math.abs(this.y - this.originalY) > 2) {
+                            this.y += (this.originalY - this.y) / 50;
+                        } else {
+                            this.y = this.originalY;
+                            this.yOrigin = this.originalY;
+                        }
+                    }
+
+                    context.save();
+                    context.fillStyle = this.color;
+                    context.strokeStyle = this.color;
+                    context.beginPath();
+                    const oldPos = rotate(centerx, centery, this.prevX, this.prevY, -this.prevR);
+                    context.moveTo(oldPos[0], oldPos[1]);
+                    context.translate(centerx, centery);
+                    context.rotate(this.rotation);
+                    context.translate(-centerx, -centery);
+                    context.lineTo(this.x, this.y);
+                    context.stroke();
+                    context.restore();
+
+                    this.prevR = this.rotation;
+                    this.prevX = this.x;
+                    this.prevY = this.y;
+                }
+            }
+
+            // Event listeners with portfolio redirect
+            const centerHover = document.querySelector('.centerHover');
+            
+            centerHover.addEventListener('click', function() {
+                collapse = false;
+                expanse = true;
+                returning = false;
+                this.classList.add('open');
+                
+                // Hide loading text
+                document.getElementById('loadingText').style.opacity = '0';
+                
+                // Redirect to portfolio after experiencing the black hole
+                setTimeout(() => {
+                    // Fade out everything
+                    document.body.style.transition = 'opacity 2s ease';
+                    document.body.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }, 8000); // Show black hole expansion for 8 seconds then redirect
+            });
+            
+            centerHover.addEventListener('mouseover', function() {
+                if (expanse === false) {
+                    collapse = true;
+                }
+            });
+            
+            centerHover.addEventListener('mouseout', function() {
+                if (expanse === false) {
+                    collapse = false;
+                }
+            });
+
+            // Animation loop
+            function loop() {
+                const now = new Date().getTime();
+                currentTime = (now - startTime) / 50;
+
+                context.fillStyle = 'rgba(25,25,25,0.2)';
+                context.fillRect(0, 0, cw, ch);
+
+                for (let i = 0; i < stars.length; i++) {
+                    if (stars[i] !== undefined) {
+                        stars[i].draw();
+                    }
+                }
+
+                requestAnimationFrame(loop);
+            }
+
+            function init() {
+                context.fillStyle = 'rgba(25,25,25,1)';
+                context.fillRect(0, 0, cw, ch);
+                for (let i = 0; i < 2500; i++) {
+                    new Star();
+                }
+                loop();
+            }
+
+            init();
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            blackhole('#blackhole');
+            
+            // Show loading text after 3 seconds
+            setTimeout(() => {
+                document.getElementById('loadingText').classList.add('show');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
