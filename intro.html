@@ -18,42 +18,52 @@
             font-family: 'Arial', sans-serif;
         }
 
+        .intro-content {
+            position: absolute;
+            top: 43%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 4;
+            text-align: center;
+            pointer-events: none;
+        }
+
         /* Welcome Text Above Black Hole */
         .welcome-text {
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #DDD;
+            position: static;
+            color: #f5f7fa;
             font-size: 2.5rem;
-            font-weight: 300;
+            font-weight: 500;
+            letter-spacing: 0.02em;
             text-align: center;
-            z-index: 3;
+            z-index: 4;
             opacity: 0;
+            margin-bottom: 0.85rem;
+            text-shadow: 0 6px 28px rgba(0, 0, 0, 0.75), 0 0 12px rgba(255, 255, 255, 0.15);
             animation: fadeInUp 2s ease 1s forwards;
         }
 
         .subtitle {
-            position: absolute;
-            top: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #888;
+            position: static;
+            color: #c7cdd4;
             font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.01em;
             text-align: center;
-            z-index: 3;
+            z-index: 4;
             opacity: 0;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
             animation: fadeInUp 2s ease 1.5s forwards;
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateX(-50%) translateY(30px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
-                transform: translateX(-50%) translateY(0);
+                transform: translateY(0);
             }
         }
 
@@ -76,7 +86,9 @@
             margin-left: -128px;
             z-index: 2;
             cursor: pointer;
-            line-height: 255px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             transition: all 500ms;
         }
@@ -99,10 +111,14 @@
         }
 
         .centerHover span {
-            color: #666;
+            color: #d7dbe0;
             font-family: serif;
-            font-size: 16px;
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
             position: relative;
+            transform: translateY(36px);
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
             transition: all 500ms;
         }
 
@@ -113,7 +129,7 @@
             width: 16px;
             margin-right: 12px;
             margin-bottom: 4px;
-            background-color: #666;
+            background-color: #d7dbe0;
             transition: all 500ms;
         }
 
@@ -124,7 +140,7 @@
             width: 16px;
             margin-left: 12px;
             margin-bottom: 4px;
-            background-color: #666;
+            background-color: #d7dbe0;
             transition: all 500ms;
         }
 
@@ -139,13 +155,15 @@
         /* Loading Text */
         .loading-text {
             position: absolute;
-            bottom: 20%;
+            top: calc(50% + 140px);
             left: 50%;
             transform: translateX(-50%);
-            color: #666;
+            color: #b6bcc4;
             font-size: 0.9rem;
-            z-index: 3;
+            letter-spacing: 0.02em;
+            z-index: 4;
             opacity: 0;
+            text-shadow: 0 3px 14px rgba(0, 0, 0, 0.7);
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -160,16 +178,26 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .intro-content {
+                width: 90%;
+                top: 41%;
+            }
+
             .welcome-text {
                 font-size: 2rem;
-                top: 10%;
                 padding: 0 1rem;
             }
             
             .subtitle {
                 font-size: 1rem;
-                top: 20%;
                 padding: 0 1rem;
+            }
+
+            .loading-text {
+                top: calc(50% + 120px);
+                font-size: 0.85rem;
+                padding: 0 1rem;
+                text-align: center;
             }
 
             .centerHover {
@@ -177,27 +205,29 @@
                 height: 200px;
                 margin-top: -100px;
                 margin-left: -100px;
-                line-height: 200px;
             }
 
             .centerHover span {
                 font-size: 14px;
+                transform: translateY(30px);
             }
         }
     </style>
 </head>
 <body>
     <!-- Welcome Text -->
-    <div class="welcome-text">Welcome to My Portfolio</div>
-    <div class="subtitle">Sanjay S - Computer Science Student</div>
+    <div class="intro-content">
+        <div class="welcome-text">Welcome to My Portfolio</div>
+        <div class="subtitle">Sanjay S • Computer Science Student</div>
+    </div>
     
     <!-- Black Hole Container -->
     <div id="blackhole">
-        <div class="centerHover"><span>Enter to Continue</span></div>
+        <div class="centerHover"><span>Click to Enter</span></div>
     </div>
     
     <!-- Loading Text -->
-    <div class="loading-text" id="loadingText">Click the center to experience the journey</div>
+    <div class="loading-text" id="loadingText">Click the center ring to begin your journey</div>
 
     <script>
         function blackhole(element) {
@@ -206,7 +236,7 @@
             const w = container.offsetWidth;
             const cw = w;
             const ch = h;
-            const maxorbit = 255;
+            const maxorbit = Math.max((Math.hypot(cw, ch) / 2) + 40, 420);
             const centery = ch / 2;
             const centerx = cw / 2;
 
@@ -225,7 +255,7 @@
             container.appendChild(canvas);
             const context = canvas.getContext("2d");
 
-            context.globalCompositeOperation = "multiply";
+            context.globalCompositeOperation = "screen";
 
             function setDPI(canvas, dpi) {
                 if (!canvas.style.width)
@@ -253,11 +283,8 @@
 
             class Star {
                 constructor() {
-                    const rands = [];
-                    rands.push(Math.random() * (maxorbit / 2) + 1);
-                    rands.push(Math.random() * (maxorbit / 2) + maxorbit);
-
-                    this.orbital = (rands.reduce((p, c) => p + c, 0) / rands.length);
+                    const spread = Math.pow(Math.random(), 0.8);
+                    this.orbital = (0.1 + (spread * 0.9)) * maxorbit;
                     
                     this.x = centerx;
                     this.y = centery + this.orbital;
@@ -272,7 +299,8 @@
                         this.collapseBonus = 0;
                     }
 
-                    this.color = 'rgba(255,255,255,' + (1 - ((this.orbital) / 255)) + ')';
+                    const alpha = Math.max(0.14, Math.min(0.95, 1 - (this.orbital / (maxorbit * 1.25))));
+                    this.color = 'rgba(255,255,255,' + alpha + ')';
                     this.hoverPos = centery + (maxorbit / 2) + this.collapseBonus;
                     this.expansePos = centery + (this.id % 100) * -10 + (Math.floor(Math.random() * 20) + 1);
                     this.prevR = this.startRotation;
@@ -338,6 +366,12 @@
 
             // Event listeners with portfolio redirect
             const centerHover = document.querySelector('.centerHover');
+
+            const hoverSize = Math.max(Math.min(maxorbit * 0.52, Math.min(cw, ch) * 0.58), 190);
+            centerHover.style.width = `${hoverSize}px`;
+            centerHover.style.height = `${hoverSize}px`;
+            centerHover.style.marginLeft = `${-(hoverSize / 2)}px`;
+            centerHover.style.marginTop = `${-(hoverSize / 2)}px`;
             
             centerHover.addEventListener('click', function() {
                 collapse = false;
@@ -355,7 +389,7 @@
                     document.body.style.opacity = '0';
                     
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'index.html?from=intro';
                     }, 2000);
                 }, 8000); // Show black hole expansion for 8 seconds then redirect
             });
@@ -392,7 +426,8 @@
             function init() {
                 context.fillStyle = 'rgba(25,25,25,1)';
                 context.fillRect(0, 0, cw, ch);
-                for (let i = 0; i < 2500; i++) {
+                const starCount = Math.max(2800, Math.min(7000, Math.floor((cw * ch) / 350)));
+                for (let i = 0; i < starCount; i++) {
                     new Star();
                 }
                 loop();
