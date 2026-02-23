@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sanjay S - Computer Science student portfolio featuring full-stack projects, web applications, and backend development work.">
+    <meta name="keywords" content="Sanjay S, portfolio, full stack developer, computer science student, web development, python, react, django">
+    <meta name="author" content="Sanjay S">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sanjay S Portfolio">
+    <meta property="og:description" content="Explore projects by Sanjay S in full-stack development, web apps, and backend engineering.">
+    <meta property="og:image" content="./media/profile.jpg">
+    <meta property="og:url" content="./index.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sanjay S Portfolio">
+    <meta name="twitter:description" content="Explore projects by Sanjay S in full-stack development, web apps, and backend engineering.">
+    <meta name="twitter:image" content="./media/profile.jpg">
     <title>Sanjay S - Computer Science Student</title>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -234,6 +246,18 @@
             display: flex;
             gap: 1rem;
             margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-availability {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.35rem 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: #d7d7d7;
         }
 
         .cta-primary, .cta-secondary {
@@ -267,6 +291,22 @@
 
         .cta-secondary:hover {
             background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+        }
+
+        .cta-resume {
+            padding: 1rem 2rem;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        .cta-resume:hover {
+            background: rgba(255, 255, 255, 0.12);
             border-color: #fff;
         }
 
@@ -670,6 +710,77 @@
             background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
         }
 
+        .featured-projects {
+            margin: 1rem 0 3rem;
+        }
+
+        .featured-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .featured-header h3 {
+            font-size: 1rem;
+            letter-spacing: 0.12em;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .featured-header span {
+            font-size: 0.85rem;
+            color: #8f8f8f;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .featured-card {
+            background: #101010;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .featured-card h4 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 0.45rem;
+            letter-spacing: 0.04em;
+        }
+
+        .featured-card p {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .featured-stack {
+            display: flex;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+        }
+
+        .featured-stack span {
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #d5d5d5;
+            font-size: 0.68rem;
+            padding: 0.2rem 0.45rem;
+            letter-spacing: 0.08em;
+        }
+
         .work-filter {
             display: flex;
             gap: 1rem;
@@ -726,7 +837,32 @@
             height: 250px;
             background: linear-gradient(135deg, #222 0%, #1a1a1a 100%);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .work-thumb {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.12);
+            text-transform: uppercase;
+            user-select: none;
+            position: absolute;
+            z-index: 0;
+        }
+
+        .work-item:hover .work-thumb {
+            color: rgba(255, 255, 255, 0.06);
+        }
+
+        .work-image.thumb-tempowise { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .work-image.thumb-mtc { background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #462b6e 100%); }
+        .work-image.thumb-noter { background: linear-gradient(135deg, #0a2e1a 0%, #1b4e2d 50%, #2b6e46 100%); }
+        .work-image.thumb-notehub { background: linear-gradient(135deg, #2e1a0a 0%, #4e2d1b 50%, #6e462b 100%); }
+        .work-image.thumb-cityflow { background: linear-gradient(135deg, #0a1a2e 0%, #1b2d4e 50%, #2b466e 100%); }
+        .work-image.thumb-terra { background: linear-gradient(135deg, #1a2e0a 0%, #2d4e1b 50%, #466e2b 100%); }
 
         .work-item.featured .work-image {
             height: 350px;
@@ -1139,6 +1275,15 @@
             .work-filter {
                 flex-wrap: wrap;
             }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
             
             .form-row {
                 grid-template-columns: 1fr;
@@ -1238,9 +1383,11 @@
                         Second-year Computer Science student specializing in full-stack 
                         web development, creating innovative applications and digital experiences
                     </p>
+                    <div class="hero-availability">OPEN TO INTERNSHIPS • AVAILABLE FOR COLLABORATION</div>
                     <div class="hero-cta">
                         <button class="cta-primary">VIEW PROJECTS</button>
                         <button class="cta-secondary">GET IN TOUCH</button>
+                        <a class="cta-resume" href="./media/Sanjay_S_Resume.pdf" download>DOWNLOAD RESUME</a>
                     </div>
                     <div class="hero-stats">
                         <div class="stat">
@@ -1366,6 +1513,35 @@
                 <h2 class="section-title">PROJECTS</h2>
                 <div class="section-line"></div>
             </div>
+            <div class="featured-projects">
+                <div class="featured-header">
+                    <h3>FEATURED PROJECTS</h3>
+                    <span>Click a card to view repository</span>
+                </div>
+                <div class="featured-grid">
+                    <div class="featured-card" onclick="window.open('https://github.com/sanjays2007/TEMPOWISE', '_blank')">
+                        <h4>TEMPOWISE</h4>
+                        <p>Project management platform built for streamlined team collaboration and task tracking.</p>
+                        <div class="featured-stack">
+                            <span>PYTHON</span><span>FIREBASE</span><span>API</span>
+                        </div>
+                    </div>
+                    <div class="featured-card" onclick="window.open('https://github.com/sanjays2007/CityFlow-AI', '_blank')">
+                        <h4>CITYFLOW AI</h4>
+                        <p>Traffic intelligence system using AI-driven analysis for smarter transport decisions.</p>
+                        <div class="featured-stack">
+                            <span>AI/ML</span><span>PYTHON</span><span>ANALYTICS</span>
+                        </div>
+                    </div>
+                    <div class="featured-card" onclick="window.open('https://github.com/sanjays2007/Noter_', '_blank')">
+                        <h4>NOTER APPLICATION</h4>
+                        <p>Responsive note-taking app focused on quick capture, clean UI, and reliable organization.</p>
+                        <div class="featured-stack">
+                            <span>REACT</span><span>CRUD</span><span>UI/UX</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="work-filter">
                 <button class="filter-btn active" data-filter="all">ALL</button>
                 <button class="filter-btn" data-filter="web">WEB APPS</button>
@@ -1374,7 +1550,8 @@
             </div>
             <div class="work-grid">
                 <div class="work-item featured" data-category="fullstack" onclick="window.open('https://github.com/sanjays2007/TEMPOWISE', '_blank')">
-                    <div class="work-image">
+                    <div class="work-image thumb-tempowise">
+                        <span class="work-thumb">TW</span>
                         <div class="work-overlay">
                             <div class="overlay-content">
                                 <h3>TEMPOWISE</h3>
@@ -1394,7 +1571,8 @@
                     </div>
                 </div>
                 <div class="work-item" data-category="fullstack" onclick="window.open('https://github.com/sanjays2007/MTC-Bus-Booking-System', '_blank')">
-                    <div class="work-image">
+                    <div class="work-image thumb-mtc">
+                        <span class="work-thumb">MTC</span>
                         <div class="work-overlay">
                             <div class="overlay-content">
                                 <h3>MTC BUS BOOKING</h3>
@@ -1414,7 +1592,8 @@
                     </div>
                 </div>
                 <div class="work-item" data-category="web" onclick="window.open('https://github.com/sanjays2007/Noter_', '_blank')">
-                    <div class="work-image">
+                    <div class="work-image thumb-noter">
+                        <span class="work-thumb">NR</span>
                         <div class="work-overlay">
                             <div class="overlay-content">
                                 <h3>NOTER APPLICATION</h3>
@@ -1434,7 +1613,8 @@
                     </div>
                 </div>
                 <div class="work-item" data-category="backend" onclick="window.open('https://github.com/sanjays2007/NoteHub', '_blank')">
-                    <div class="work-image">
+                    <div class="work-image thumb-notehub">
+                        <span class="work-thumb">NH</span>
                         <div class="work-overlay">
                             <div class="overlay-content">
                                 <h3>NOTEHUB BACKEND</h3>
@@ -1454,7 +1634,8 @@
                     </div>
                 </div>
                 <div class="work-item" data-category="fullstack" onclick="window.open('https://github.com/sanjays2007/CityFlow-AI', '_blank')">
-                    <div class="work-image">
+                    <div class="work-image thumb-cityflow">
+                        <span class="work-thumb">CF</span>
                         <div class="work-overlay">
                             <div class="overlay-content">
                                 <h3>CITYFLOW AI</h3>
@@ -1474,7 +1655,8 @@
                     </div>
                 </div>
                 <div class="work-item" data-category="fullstack" onclick="window.open('https://github.com/sanjays2007/TerraCredits', '_blank')">
-                    <div class="work-image">
+                    <div class="work-image thumb-terra">
+                        <span class="work-thumb">TC</span>
                         <div class="work-overlay">
                             <div class="overlay-content">
                                 <h3>TERRACREDITS</h3>
@@ -1519,7 +1701,7 @@
                             </div>
                             <div class="contact-content">
                                 <span class="contact-label">EMAIL</span>
-                                <a href="mailto:sanjay@student.dev">sanjay@student.dev</a>
+                                <a href="mailto:sanjaycdsureshkumar@gmail.com">sanjaycdsureshkumar@gmail.com</a>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -1543,23 +1725,27 @@
                     </div>
                     <div class="social-links">
                         <a href="https://github.com/sanjays2007" class="social-link">GITHUB</a>
-                        <a href="#" class="social-link">LINKEDIN</a>
+                        <a href="https://www.linkedin.com/in/sanjay-sureshkumar-830937314" class="social-link">LINKEDIN</a>
                         <a href="#" class="social-link">TWITTER</a>
                         <a href="https://codepen.io/sanjays2007" class="social-link">CODEPEN</a>
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form>
+                    <form action="https://api.web3forms.com/submit" method="POST">
+                        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
+                        <input type="hidden" name="subject" value="New Portfolio Contact">
+                        <input type="hidden" name="redirect" value="">
+                        <input type="checkbox" name="botcheck" style="display:none">
                         <div class="form-row">
                             <div class="form-group">
-                                <input type="text" placeholder="NAME" required>
+                                <input type="text" name="name" placeholder="NAME" required>
                             </div>
                             <div class="form-group">
-                                <input type="email" placeholder="EMAIL" required>
+                                <input type="email" name="email" placeholder="EMAIL" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <select required>
+                            <select name="project_type" required>
                                 <option value="">PROJECT TYPE</option>
                                 <option value="web">Web Application</option>
                                 <option value="fullstack">Full-Stack Project</option>
@@ -1568,7 +1754,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <textarea placeholder="MESSAGE" rows="6" required></textarea>
+                            <textarea name="message" placeholder="MESSAGE" rows="6" required></textarea>
                         </div>
                         <button type="submit" class="submit-btn">
                             <span>SEND MESSAGE</span>
@@ -1590,12 +1776,12 @@
                 </div>
                 <div class="footer-links">
                     <a href="https://github.com/sanjays2007">GITHUB</a>
-                    <a href="#">LINKEDIN</a>
+                    <a href="https://www.linkedin.com/in/sanjay-sureshkumar-830937314">LINKEDIN</a>
                     <a href="#">TWITTER</a>
                     <a href="https://codepen.io/sanjays2007">CODEPEN</a>
                 </div>
                 <div class="footer-copyright">
-                    <span>© 2024 SANJAY S. ALL RIGHTS RESERVED.</span>
+                    <span>© 2026 SANJAY S. ALL RIGHTS RESERVED.</span>
                 </div>
             </div>
         </div>
@@ -1688,29 +1874,47 @@
             });
         });
 
-        // Form handling
+        // Form handling via Web3Forms
         document.querySelector('.contact-form form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const submitBtn = this.querySelector('.submit-btn');
             const originalText = submitBtn.querySelector('span').textContent;
+            const form = this;
             
             submitBtn.querySelector('span').textContent = 'SENDING...';
             submitBtn.disabled = true;
             submitBtn.style.background = '#666';
             
-            setTimeout(() => {
-                submitBtn.querySelector('span').textContent = 'MESSAGE SENT!';
-                submitBtn.style.background = '#28a745';
-                
-                this.reset();
-                
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    submitBtn.querySelector('span').textContent = 'MESSAGE SENT!';
+                    submitBtn.style.background = '#28a745';
+                    form.reset();
+                } else {
+                    submitBtn.querySelector('span').textContent = 'FAILED — TRY AGAIN';
+                    submitBtn.style.background = '#dc3545';
+                }
                 setTimeout(() => {
                     submitBtn.querySelector('span').textContent = originalText;
                     submitBtn.style.background = '#fff';
                     submitBtn.disabled = false;
                 }, 3000);
-            }, 2000);
+            })
+            .catch(() => {
+                submitBtn.querySelector('span').textContent = 'ERROR — TRY AGAIN';
+                submitBtn.style.background = '#dc3545';
+                setTimeout(() => {
+                    submitBtn.querySelector('span').textContent = originalText;
+                    submitBtn.style.background = '#fff';
+                    submitBtn.disabled = false;
+                }, 3000);
+            });
         });
     </script>
 
